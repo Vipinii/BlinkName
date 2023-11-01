@@ -1,21 +1,21 @@
 int led1 = LED_BUILTIN;
-
 int buttonPin = 2; // Push button for resetting the name
 bool isButtonPressed = false;
 
 void setup() {
   pinMode(led1, OUTPUT);
   pinMode(buttonPin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(buttonPin), resetName, FALLING);
+  attachInterrupt(digitalPinToInterrupt(buttonPin), interruptHandler, FALLING);
 }
 
-void loop() 
-{
+void loop() {
+  // Check if the button was pressed in the interrupt handler
   if (isButtonPressed) {
     resetName();
     isButtonPressed = false;
   }
 
+  
   // V (...-)
   blinkDot(); delay(500);
   blinkDot(); delay(500);
@@ -42,19 +42,6 @@ void loop()
 
   delay(2000);  // Gap between words
 }
-
-void blinkDot() {
-  digitalWrite(led1, HIGH);
-  delay(200);
-  digitalWrite(led1, LOW);
-  delay(200);
-}
-
-void blinkDash() {
-  digitalWrite(led1, HIGH);
-  delay(600);
-  digitalWrite(led1, LOW);
-  delay(200);
 }
 
 void resetName() {
@@ -65,4 +52,9 @@ void resetName() {
   delay(1000);
   digitalWrite(led1, LOW);
   delay(1000);
+}
+
+void interruptHandler() {
+  // Set the flag to indicate the button was pressed
+  isButtonPressed = true;
 }
